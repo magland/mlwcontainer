@@ -10,9 +10,9 @@ if (!url) {
 	return;
 }
 
-var destpath=CLP.namedParameters['destpath'];
-if (!destpath) {
-	console.error('Missing command-line parameter: destpath');
+var srcpath=CLP.namedParameters['srcpath'];
+if (!srcpath) {
+	console.error('Missing command-line parameter: srcpath');
 	return;
 }
 
@@ -37,12 +37,17 @@ request(url, function (error, response, body) {
 	}
 	for (var fname in workspace.files) {
 		var path0=destpath+'/'+fname;
-		console.log ('Writing '+path0);
-		if (!write_text_file(path0,workspace.files[fname].content)) {
-			console.error('Unable to write file: '+path0);
+		console.log ('Read '+path0);
+		var txt=read_text_file(path0);
+		if (!txt) {
+			console.error('Unable to read file: '+path0);
 			return;
 		}
+		workspace.files[fname].content=txt;
 	}
+	data={content:JSON.stringify(workspace)};
+	//work in progress!!!!!!!!!!!!!!!!
+	request.post()
 });
 
 function try_parse_json(json) {

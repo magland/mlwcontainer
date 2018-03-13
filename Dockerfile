@@ -25,6 +25,11 @@ RUN apt-get update && \
 # Install jupyterlab 
 RUN pip3 install jupyterlab
 
+# Install utils for convenience
+RUN apt-get update && \
+    apt-get install -y \
+    nano htop
+
 # Pre-install some things we know we are going to want.
 # Other packages specified in requirements.txt of the workspace
 # will be installed at run time 
@@ -33,15 +38,18 @@ RUN pip3 install numpy requests matplotlib
 # Copy the code for initializing the repo
 COPY ./_private /working/_private
 
-# Install node packages for the utilities
-WORKDIR /working/_private/node_utils
+# Install required node packages
+WORKDIR /working/_private/node
 RUN npm install
 
 # Expose the port for jupyterlab
 EXPOSE 8888
 
-# Set the working directory, prior to running initialize
-WORKDIR /working
+# Set the working directory
+RUN mkdir /working/workspace
+WORKDIR /working/workspace
 
-CMD _private/initialize.sh
+ENV PATH "/working/_private/bin:$PATH"
+
+CMD mlw_init
 

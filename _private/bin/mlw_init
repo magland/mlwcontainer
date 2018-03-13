@@ -20,12 +20,15 @@ then
 	exit -1
 fi
 
-workspace_url="$DOCSTOR_URL/api/getDocument?id=$MLW_DOCUMENT_ID&access_token=$MLW_ACCESS_TOKEN&include_content=true"
+## Download the workspace document
+/working/_private/node/download_mlw_document.js --doc=/working/_private/data/workspace.mlw
 
-cd /working
-mkdir workspace
-_private/node_utils/download_workspace.js --destpath=/working/workspace --workspace_url=$workspace_url
+## Set the workspace files
+/working/_private/node/update_workspace_files.js --doc=/working/_private/data/workspace.mlw --destpath=/working/workspace
+
+## Install the python requirements
 cd /working/workspace
 pip3 install -r requirements.txt
 
+## Start jupyter lab
 jupyter lab --allow-root --port=8888 --ip=0.0.0.0 --NotebookApp.token=
