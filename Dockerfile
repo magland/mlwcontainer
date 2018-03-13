@@ -2,6 +2,16 @@ FROM ubuntu:16.04
 
 MAINTAINER Jeremy Magland
 
+# Example usage:
+#   Set the following environment variables in the .env file (see sample.env)
+#   (Note that it is NOT sufficient to set these variables in the host OS. They must be set in the container)
+#       DOCSTOR_URL
+#       MLW_DOCUMENT_ID
+#       MLW_ACCESS_TOKEN
+#   docker build -t workspace1 .
+#   docker run --env-file=.env -p 8888:8888 -it workspace1
+#   In web browser: http://localhost:8888
+
 # Python3
 RUN apt-get update && \
     apt-get install -y \
@@ -33,10 +43,5 @@ EXPOSE 8888
 # Set the working directory, prior to running initialize
 WORKDIR /working
 
-CMD _private/initialize.sh $workspace_url
+CMD _private/initialize.sh
 
-# Example usage:
-#   Set the workspace_url variable in the .env file (see sample.env)
-#   docker build -t workspace1 .
-#   docker run --env-file=.env -p 8888:8888 -it workspace1
-#   In web browser: http://localhost:8888

@@ -2,7 +2,25 @@
 
 set -e
 
-workspace_url=$1
+if [ -z "$DOCSTOR_URL" ];
+then
+	echo "Environment variable not set: DOCSTOR_URL"
+	exit -1
+fi
+
+if [ -z "$MLW_DOCUMENT_ID" ];
+then
+	echo "Environment variable not set: MLW_DOCUMENT_ID"
+	exit -1
+fi
+
+if [ -z "$MLW_ACCESS_TOKEN" ];
+then
+	echo "Environment variable not set: MLW_ACCESS_TOKEN"
+	exit -1
+fi
+
+workspace_url="$DOCSTOR_URL/api/getDocument?id=$MLW_DOCUMENT_ID&access_token=$MLW_ACCESS_TOKEN&include_content=true"
 
 cd /working
 mkdir workspace
