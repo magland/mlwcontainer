@@ -20,15 +20,30 @@ then
 	exit -1
 fi
 
+DIR="`dirname $0`"
+
+# Install the nodejs dependencies
+echo "Installing nodejs dependencies..."
+cd $DIR/../node
+npm install
+
 ## Download the workspace document
-/working/_private/node/download_mlw_document.js --doc=/working/_private/data/workspace.mlw
+echo "Downloading workspace document..."
+$DIR/../node/download_mlw_document.js --doc=$DIR/../data/workspace.mlw
 
 ## Set the workspace files
-/working/_private/node/update_workspace_files.js --doc=/working/_private/data/workspace.mlw --destpath=/working/workspace
+echo "Setting the workspace files..."
+mkdir -p $DIR/../workspace
+$DIR/../node/update_workspace_files.js --doc=$DIR/../data/workspace.mlw --destpath=$DIR/../workspace
 
 ## Install the python requirements
-cd /working/workspace
+echo "Installing python requirements..."
+cd $DIR/../workspace
+pip3 install jupyter
 pip3 install -r requirements.txt
 
+export PATH=$DIR:$PATH
+
 ## Start jupyter lab
+echo "Starting jupyter lab"
 jupyter lab --allow-root --port=8888 --ip=0.0.0.0 --NotebookApp.token=

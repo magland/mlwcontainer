@@ -34,6 +34,7 @@ RUN apt-get update && \
 # Other packages specified in requirements.txt of the workspace
 # will be installed at run time 
 RUN pip3 install numpy requests matplotlib
+RUN pip3 install jupyter
 
 # Copy the code for initializing the repo
 COPY ./_private /working/_private

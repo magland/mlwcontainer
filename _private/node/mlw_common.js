@@ -2,6 +2,7 @@ exports.try_parse_json=try_parse_json;
 exports.CLParams=CLParams;
 exports.write_text_file=write_text_file;
 exports.read_text_file=read_text_file;
+exports.ends_with=ends_with;
 
 function try_parse_json(json) {
 	try {
@@ -58,4 +59,8 @@ function read_text_file(fname) {
 	catch(err) {
 		return '';
 	}
+}
+
+function ends_with(str,str2) {
+	return (str.slice(str.length-str2.length)==str2);
 }
