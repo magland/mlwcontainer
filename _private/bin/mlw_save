@@ -3,7 +3,7 @@
 set -e
 
 ## Update the workspace document
-/working/_private/node/update_mlw_document.js --doc=/working/_private/data/workspace.mlw --srcpath=/working/workspace
+/working/_private/node/update_mlw_document.js --doc=/working/_private/data/workspace.mlw --srcpath=/working/_private/workspace
 
 ## Upload the workspace document
 /working/_private/node/upload_mlw_document.js --doc=/working/_private/data/workspace.mlw

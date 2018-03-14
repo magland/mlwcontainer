@@ -29,6 +29,7 @@ npm install
 
 ## Download the workspace document
 echo "Downloading workspace document..."
+mkdir $DIR/../data
 $DIR/../node/download_mlw_document.js --doc=$DIR/../data/workspace.mlw
 
 ## Set the workspace files
