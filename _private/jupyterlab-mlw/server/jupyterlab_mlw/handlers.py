@@ -24,22 +24,16 @@ class MLW_save_workspace_handler(MLW_handler):
     def get(self):
         """
         """
-        output=os.popen("mlw_save").read()
-        result={
-            "success":True,
-            "output":output
-        }
-        self.finish(json.dumps(result))
+        self.post()
 
     def post(self):
         """
         """
         my_data = json.loads(self.request.body.decode('utf-8'))
-        #current_path = my_data["current_path"]
-        #result = self.mlw.status(current_path)
+        output=os.popen("mlw_save").read()
         result={
-            "success":False,
-            "error":"Post not yet supported"
+            "success":True,
+            "output":output
         }
         self.finish(json.dumps(result))
 

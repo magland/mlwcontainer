@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# set -e
+
+# Make sure we terminate the container when this script is terminated
+random_container_name=mlw_$(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 10)
+trap "echo 'Terminating container...'; docker kill $random_container_name; docker rm $random_container_name; exit;" SIGINT SIGTERM EXIT 0 1 2 3
+
+DIR="`dirname $0`"
+cd $DIR/..
+echo "Building docker image..."
+docker build -t mlw1 .
+if [ ! $? -eq 0 ]; then
+    echo "Error building docker image."
+    exit $?
+fi
+
+echo "" > tmp.env
+echo "DOCSTOR_URL=$DOCSTOR_URL" >> tmp.env
+echo "MLW_DOCUMENT_ID=$MLW_DOCUMENT_ID" >> tmp.env
+echo "MLW_ACCESS_TOKEN=$MLW_ACCESS_TOKEN" >> tmp.env
+echo "Running docker container..."
+
+
+## Find next available port:
+read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range
+while :
+do
+        PORT="`shuf -i $LOWERPORT-$UPPERPORT -n 1`"
+        ss -lpn | grep -q ":$PORT " || break
+done
+echo "Using port: $PORT"
+
+docker run --env-file=tmp.env --name $random_container_name -p $PORT:8888 -t mlw1 &
+
+# Wait for the server to have started...
+echo "Waiting for server to start..."
+while :
+do
+	#test=$(ss -lpn | grep ":$PORT ")
+	status=$(curl -s --head -w %{http_code} http://localhost:$PORT -o /dev/null)
+	if [ "$status" == "000" ]; then
+		#echo "Port $PORT is not yet occupied"
+		sleep 0.25
+	else
+		echo "Server seems to be up (got status: $status)"
+		break
+	fi
+done
+
+# opening browser
+echo "Opening browser"
+xdg-open http://localhost:$PORT
+
+wait
+
+
+
+
+

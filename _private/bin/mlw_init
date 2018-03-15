@@ -22,11 +22,6 @@ fi
 
 DIR="`dirname $0`"
 
-# Install the nodejs dependencies
-echo "Installing nodejs dependencies..."
-cd $DIR/../node
-npm install
-
 ## Download the workspace document
 echo "Downloading workspace document..."
 mkdir $DIR/../data
@@ -40,7 +35,6 @@ $DIR/../node/update_workspace_files.js --doc=$DIR/../data/workspace.mlw --destpa
 ## Install the python requirements
 echo "Installing python requirements..."
 cd $DIR/../workspace
-pip3 install jupyter
 pip3 install -r requirements.txt
 
 export PATH=$DIR:$PATH

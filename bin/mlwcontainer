@@ -1,0 +1,3 @@
+#!/bin/bash
+
+xterm -e `dirname $0`/mlwcontainer.js $@

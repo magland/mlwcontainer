@@ -49,7 +49,7 @@ COPY ./_private/jupyterlab-mlw/client /working/_private/jupyterlab-mlw/client
 WORKDIR /working/_private/jupyterlab-mlw/client
 RUN npm install
 RUN npm run build
-RUN jupyter labextension install .
+RUN jupyter labextension install . --no-build
 RUN jupyter lab build
 
 # Set up the jupyterlab server extensions
@@ -65,6 +65,7 @@ EXPOSE 8888
 RUN mkdir /working/workspace
 WORKDIR /working/workspace
 
+COPY ./_private/bin /working/_private/bin
 ENV PATH "/working/_private/bin:$PATH"
 
 CMD mlw_init
