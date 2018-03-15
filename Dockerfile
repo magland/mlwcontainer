@@ -17,31 +17,46 @@ RUN apt-get update && \
     apt-get install -y \
     python3 python3-pip
 
-# Install nodejs
+# Install utils
 RUN apt-get update && \
     apt-get install -y \
-    nodejs nodejs-legacy npm
+    curl htop git
+
+# Install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh && \
+	bash nodesource_setup.sh
+
+RUN apt-get update && \
+    apt-get install -y \
+    nodejs
 
 # Install jupyterlab 
 RUN pip3 install jupyterlab
-
-# Install utils for convenience
-RUN apt-get update && \
-    apt-get install -y \
-    nano htop
 
 # Pre-install some things we know we are going to want.
 # Other packages specified in requirements.txt of the workspace
 # will be installed at run time 
 RUN pip3 install numpy requests matplotlib
-RUN pip3 install jupyter
-
-# Copy the code for initializing the repo
-COPY ./_private /working/_private
+RUN pip3 install jupyterlab
 
 # Install required node packages
+COPY ./_private/node /working/_private/node
 WORKDIR /working/_private/node
 RUN npm install
+
+# Set up the jupyterlab client extensions
+COPY ./_private/jupyterlab-mlw/client /working/_private/jupyterlab-mlw/client
+WORKDIR /working/_private/jupyterlab-mlw/client
+RUN npm install
+RUN npm run build
+RUN jupyter labextension install .
+RUN jupyter lab build
+
+# Set up the jupyterlab server extensions
+COPY ./_private/jupyterlab-mlw/server /working/_private/jupyterlab-mlw/server
+WORKDIR /working/_private/jupyterlab-mlw/server
+RUN pip3 install .
+RUN jupyter serverextension enable --py jupyterlab_mlw 
 
 # Expose the port for jupyterlab
 EXPOSE 8888
