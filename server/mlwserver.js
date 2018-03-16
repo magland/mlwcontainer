@@ -52,6 +52,7 @@ app.get('/attachToContainer', handle_attach_to_container);
 //  console.info('mlwserver is running on port', port);
 //});
 
+const port=app.get('port');
 if (process.env.SSL != null ? process.env.SSL : port%1000==443) {
   const options = {
     key:fs.readFileSync(__dirname+'/encryption/privkey.pem'),
