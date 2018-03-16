@@ -29,10 +29,7 @@ if (!workspace) {
 	process.exit(-1);	
 }
 
-if (!('files' in workspace)) {
-	console.error('Field not found in workspace document: files');
-	process.exit(-1);		
-}
+workspace.files=workspace.files||{};
 
 for (var fname in workspace.files) {
 	var path0=destpath+'/'+fname;

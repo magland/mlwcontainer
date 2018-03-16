@@ -39,11 +39,6 @@ RUN pip3 install jupyterlab
 RUN pip3 install numpy requests matplotlib
 RUN pip3 install jupyterlab
 
-# Install required node packages
-COPY ./_private/node /working/_private/node
-WORKDIR /working/_private/node
-RUN npm install
-
 # Set up the jupyterlab client extensions
 COPY ./_private/jupyterlab-mlw/client /working/_private/jupyterlab-mlw/client
 WORKDIR /working/_private/jupyterlab-mlw/client
@@ -57,6 +52,11 @@ COPY ./_private/jupyterlab-mlw/server /working/_private/jupyterlab-mlw/server
 WORKDIR /working/_private/jupyterlab-mlw/server
 RUN pip3 install .
 RUN jupyter serverextension enable --py jupyterlab_mlw 
+
+# Install required node packages
+COPY ./_private/node /working/_private/node
+WORKDIR /working/_private/node
+RUN npm install
 
 # Expose the port for jupyterlab
 EXPOSE 8888

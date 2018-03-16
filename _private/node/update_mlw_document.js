@@ -31,11 +31,7 @@ if (!workspace) {
 	return;
 }
 
-if (!('files' in workspace)) {
-	console.error('Field not found in workspace document: files');
-	process.exit(-1);		
-	return;
-}
+workspace.files=workspace.files||{};
 
 var something_changed=false;
 for (var fname in workspace.files) {

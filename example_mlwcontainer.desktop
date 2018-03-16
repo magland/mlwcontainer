@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=MLWContainer
+Comment=MountainLab workspace
+OnlyShowIn=GNOME;Unity;
+Exec=/home/magland/src/mlwcontainer/bin/mlwcontainer %u
+StartupNotify=true
+Terminal=false
+Type=Application
+

@@ -76,12 +76,40 @@ async function mlw_save_workspace() {
   }
 }
 
+async function mlw_load_workspace(url_params) {
+  try {
+    var val = await HTTP_mlw_request('/mlw/load_workspace','POST',url_params);
+    if (val.status !== 200) {
+      console.log (val);
+      console.log (val.status);
+      return val.text().then(data=>{
+        throw new ServerConnection.ResponseError(val, data);
+      });
+    }
+    var obj=await val.json();
+    console.log (obj);
+    if (!obj.success) {
+      alert('Error loading workspace: '+obj.error)
+      return;
+    }
+    console.log (obj.output);
+    console.log ('Workspace has been loaded.')
+  }
+  catch(err){
+    throw ServerConnection.NetworkError;
+  }
+}
+
 /**
  * Activate the jupyterlab extension.
  */
 function activateExtension(app: JupyterLab, palette: ICommandPalette, mainMenu: IMainMenu): void {
   const category = 'MLWorkspace';
   const { commands } = app;
+
+  var url_params=parse_url_params0();
+  console.log ('url_params:',url_params);
+  mlw_load_workspace(url_params);
 
   commands.addCommand(CommandIDs.saveWorkspace, {
     label: 'Save workspace...',
@@ -114,6 +142,18 @@ function activateExtension(app: JupyterLab, palette: ICommandPalette, mainMenu: 
   });
   mainMenu.addMenu(menu, {rank: 100});
   console.log('initialized jupyterlab-mlw');
+}
+
+function parse_url_params0() {
+    var match,
+    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query  = window.location.search.substring(1);
+    var url_params = {};
+    while (match = search.exec(query))
+        url_params[decode(match[1])] = decode(match[2]);
+    return url_params;
 }
 
 

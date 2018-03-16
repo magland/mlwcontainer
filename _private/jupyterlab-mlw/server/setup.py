@@ -9,7 +9,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'notebook',
-        'psutil'
+        'psutil',
+        'requests'
     ],
     package_data={'jupyterlab_mlw': ['*']},
 )

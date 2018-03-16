@@ -2,40 +2,43 @@
 
 set -e
 
-if [ -z "$DOCSTOR_URL" ];
-then
-	echo "Environment variable not set: DOCSTOR_URL"
-	exit -1
-fi
+#if [ -z "$DOCSTOR_URL" ];
+#then
+#	echo "Environment variable not set: DOCSTOR_URL"
+#	exit -1
+#fi
 
-if [ -z "$MLW_DOCUMENT_ID" ];
-then
-	echo "Environment variable not set: MLW_DOCUMENT_ID"
-	exit -1
-fi
+#if [ -z "$MLW_DOCUMENT_ID" ];
+#then
+#	echo "Environment variable not set: MLW_DOCUMENT_ID"
+#	exit -1
+#fi
 
-if [ -z "$MLW_ACCESS_TOKEN" ];
-then
-	echo "Environment variable not set: MLW_ACCESS_TOKEN"
-	exit -1
-fi
+#if [ -z "$MLW_ACCESS_TOKEN" ];
+#then
+#	echo "Environment variable not set: MLW_ACCESS_TOKEN"
+#	exit -1
+#fi
 
 DIR="`dirname $0`"
+mkdir -p $DIR/../data
 
 ## Download the workspace document
-echo "Downloading workspace document..."
-mkdir $DIR/../data
-$DIR/../node/download_mlw_document.js --doc=$DIR/../data/workspace.mlw
+#echo "Downloading workspace document..."
+#mkdir $DIR/../data
+#$DIR/../node/download_mlw_document.js --doc=$DIR/../data/workspace.mlw
 
 ## Set the workspace files
-echo "Setting the workspace files..."
-mkdir -p $DIR/../workspace
-$DIR/../node/update_workspace_files.js --doc=$DIR/../data/workspace.mlw --destpath=$DIR/../workspace
+#echo "Setting the workspace files..."
+#mkdir -p $DIR/../workspace
+#$DIR/../node/update_workspace_files.js --doc=$DIR/../data/workspace.mlw --destpath=$DIR/../workspace
 
 ## Install the python requirements
-echo "Installing python requirements..."
-cd $DIR/../workspace
-pip3 install -r requirements.txt
+#echo "Installing python requirements..."
+#cd $DIR/../workspace
+#if [ -a "requirements.txt" ]; then
+#	pip3 install -r requirements.txt
+#fi
 
 export PATH=$DIR:$PATH
 
