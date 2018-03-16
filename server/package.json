@@ -1,0 +1,22 @@
+{
+  "name": "mlwserver",
+  "version": "0.1.0",
+  "description": "",
+  "engines": {
+    "node": "~6.11.5"
+  },
+  "main": "mlwserver.js",
+  "scripts": {
+    "start": "node mlwserver.js"
+  },
+  "bin": {},
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2"
+  },
+  "keywords": [
+    "mountainlab"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
+}
