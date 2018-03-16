@@ -47,10 +47,27 @@ app.use(function(req,res,next) {
 app.get('/attachToContainer', handle_attach_to_container);
 
 ///////////////////////////////////////////////////////////////////////////
-const port=app.get('port');
-app.listen(port, function() {
-  console.info('mlwserver is running on port', port);
-});
+//const port=app.get('port');
+//app.listen(port, function() {
+//  console.info('mlwserver is running on port', port);
+//});
+
+if (process.env.SSL != null ? process.env.SSL : port%1000==443) {
+  const options = {
+    key:fs.readFileSync(__dirname+'/encryption/privkey.pem'),
+    cert:fs.readFileSync(__dirname+'/encryption/fullchain.pem'),
+    ca:fs.readFileSync(__dirname+'/encryption/chain.pem')
+  };
+
+  require('https').createServer(options,app).listen(port,function() {
+    console.info('mlwserver is running https on port', port);
+  });
+}
+else {
+  app.listen(port, function() {
+    console.info('mlwserver is running on port', port);
+  });
+}
 
 ///////////////////////////////////////////////////////////////////////////
 function handle_attach_to_container(req,res) {
