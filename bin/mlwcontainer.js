@@ -44,6 +44,8 @@ for (var key in CLP.namedParameters) {
 var docstor_url=config['docstor_url']||'https://docstor1.herokuapp.com';
 var mlw_document_id=config['mlw_document_id']||'';
 var mlw_access_token=config['mlw_access_token']||'';
+var port=config['port']||'';
+var show_in_browser=config['show_in_browser']||'true';
 
 if (!mlw_document_id) {
 	console.error('Missing config parameter: mlw_document_id');
@@ -54,6 +56,8 @@ if (!mlw_document_id) {
 process.env.DOCSTOR_URL=docstor_url;
 process.env.MLW_DOCUMENT_ID=mlw_document_id;
 process.env.MLW_ACCESS_TOKEN=mlw_access_token;
+process.env.PORT=port;
+process.env.SHOW_IN_BROWSER=show_in_browser;
 
 console.log ("Building and running docker...");
 var P=run_process(__dirname+'/mlw_start_docker',[],function(err,stdout,return_code) {

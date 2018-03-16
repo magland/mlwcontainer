@@ -21,14 +21,16 @@ fi
 #echo "MLW_ACCESS_TOKEN=$MLW_ACCESS_TOKEN" >> tmp.env
 
 
-## Find next available port:
-echo "Finding next available port..."
-read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range
-while :
-do
-        PORT="`shuf -i $LOWERPORT-$UPPERPORT -n 1`"
-        ss -lpn | grep -q ":$PORT " || break
-done
+if [ -z "$PORT" ]; then
+	## Find next available port:
+	echo "Finding next available port..."
+	read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range
+	while :
+	do
+	        PORT="`shuf -i $LOWERPORT-$UPPERPORT -n 1`"
+	        ss -lpn | grep -q ":$PORT " || break
+	done
+fi
 echo "Using port: $PORT"
 
 #docker run --env-file=tmp.env --name $random_container_name -p $PORT:8888 -t mlw1 &
@@ -44,15 +46,22 @@ do
 		#echo "Port $PORT is not yet occupied"
 		sleep 0.25
 	else
+		url_query="docstor_url=$DOCSTOR_URL&mlw_document_id=$MLW_DOCUMENT_ID&mlw_access_token=$MLW_ACCESS_TOKEN"
+		url="http://localhost:$PORT?$url_query"
 		echo "Server seems to be up (got status: $status)"
+		echo "server-status: running"
+		echo "PORT: $PORT"
+		echo "url_query: $url_query"
+		echo "local_url: $url"
 		break
 	fi
 done
 
-# opening browser
-url="http://localhost:$PORT?docstor_url=$DOCSTOR_URL&mlw_document_id=$MLW_DOCUMENT_ID&mlw_access_token=$MLW_ACCESS_TOKEN"
-echo "Opening browser: $url"
-xdg-open $url
+if [ "$SHOW_IN_BROWSER" == "true" ]; then
+	# opening browser
+	echo "Opening browser: $url"
+	xdg-open $url
+fi
 
 wait
 
