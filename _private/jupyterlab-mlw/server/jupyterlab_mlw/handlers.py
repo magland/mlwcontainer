@@ -80,6 +80,11 @@ class MLW_load_workspace_handler(MLW_handler):
                 txt=files[key]['content']
                 print('Writing file {} ...'.format(key))
                 self.write_text_file(os.path.join(workspace_path,key),txt)
+
+            requirements_path=os.path.join(workspace_path,'requirements.txt')
+            if os.path.isfile(requirements_path):
+                pip.main(['install','-r',requirements_path])
+                
         except Exception as err:
             return {"success":False,"error":str(err)}
 

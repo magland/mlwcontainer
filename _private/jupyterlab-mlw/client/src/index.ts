@@ -115,8 +115,6 @@ function activateExtension(app: JupyterLab, palette: ICommandPalette, mainMenu: 
     label: 'Save workspace...',
     caption: 'Save changes to this MountainLab workspace...',
     execute: () => {
-      console.log('test');
-      
       mlw_save_workspace();
     }
   });
@@ -125,7 +123,6 @@ function activateExtension(app: JupyterLab, palette: ICommandPalette, mainMenu: 
     label: 'Save workspace as...',
     caption: 'Save changes to this MountainLab workspace as...',
     execute: () => {
-      console.log('test2');
       alert('Not yet implemented.');
     }
   });
@@ -141,7 +138,6 @@ function activateExtension(app: JupyterLab, palette: ICommandPalette, mainMenu: 
     menu.addItem({ command });
   });
   mainMenu.addMenu(menu, {rank: 100});
-  console.log('initialized jupyterlab-mlw');
 }
 
 function parse_url_params0() {

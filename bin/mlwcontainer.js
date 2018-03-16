@@ -8,9 +8,7 @@ var all_processes=[];
 process.on('SIGTERM', cleanup);
 process.on('SIGINT', cleanup);
 function cleanup() {
-	console.log('cleanup');
 	for (var i in all_processes) {
-		console.log('Terminating process.');
 		all_processes[i].kill('SIGINT');
 		//process.kill(-all_processes[i].pid);
 	}
