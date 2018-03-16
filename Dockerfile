@@ -53,11 +53,6 @@ WORKDIR /working/_private/jupyterlab-mlw/server
 RUN pip3 install .
 RUN jupyter serverextension enable --py jupyterlab_mlw 
 
-# Install required node packages
-COPY ./_private/node /working/_private/node
-WORKDIR /working/_private/node
-RUN npm install
-
 # Expose the port for jupyterlab
 EXPOSE 8888
 

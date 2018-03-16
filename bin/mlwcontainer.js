@@ -1,6 +1,6 @@
 #!/usr/bin/env nodejs
 
-var common=require(__dirname+'/../_private/node/mlw_common.js');
+var common=require(__dirname+'/mlw_common.js');
 
 var CLP=new common.CLParams(process.argv);
 
