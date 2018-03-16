@@ -55,9 +55,9 @@ app.get('/attachToContainer', handle_attach_to_container);
 const port=app.get('port');
 if (process.env.SSL != null ? process.env.SSL : port%1000==443) {
   const options = {
-    key:fs.readFileSync(__dirname+'/encryption/privkey.pem'),
-    cert:fs.readFileSync(__dirname+'/encryption/fullchain.pem'),
-    ca:fs.readFileSync(__dirname+'/encryption/chain.pem')
+    key:require('fs').readFileSync(__dirname+'/encryption/privkey.pem'),
+    cert:require('fs').readFileSync(__dirname+'/encryption/fullchain.pem'),
+    ca:require('fs').readFileSync(__dirname+'/encryption/chain.pem')
   };
 
   require('https').createServer(options,app).listen(port,function() {
