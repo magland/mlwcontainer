@@ -33,8 +33,13 @@ if [ -z "$PORT" ]; then
 fi
 echo "Using port: $PORT"
 
+foldermap=""
+if [ ! -z "$KBUCKET_DOWNLOAD_DIRECTORY" ]; then
+	foldermap="-v $KBUCKET_DOWNLOAD_DIRECTORY:/working/kbucket_downloads"
+fi
+
 #docker run --env-file=tmp.env --name $random_container_name -p $PORT:8888 -t mlw1 &
-docker run --name $random_container_name -p $PORT:8888 -t mlw1 &
+docker run --name $random_container_name $foldermap -p $PORT:8888 -t mlw1 &
 
 # Wait for the server to have started...
 echo "Waiting for server to start..."

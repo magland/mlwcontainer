@@ -241,7 +241,10 @@ function Container() {
     console.log ('Starting container on port '+m_port);
 
     var exe='docker';
-    var argstr=`run -p ${m_port}:8888 --name=${m_container_name} -t mlwc`
+    var foldermap='';
+    if (process.env.KBUCKET_DOWNLOAD_DIRECTORY)
+      foldermap=`-v ${process.env.KBUCKET_DOWNLOAD_DIRECTORY}:/working/kbucket_downloads`;
+    var argstr=`run -p ${m_port}:8888 ${foldermap} --name=${m_container_name} -t mlwc`
     var args=(argstr).split(' ');
     try {
       m_process=require('child_process').spawn(exe,args,opts);

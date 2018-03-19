@@ -33,12 +33,6 @@ RUN apt-get update && \
 # Install jupyterlab 
 RUN pip3 install jupyterlab
 
-# Pre-install some things we know we are going to want.
-# Other packages specified in requirements.txt of the workspace
-# will be installed at run time 
-RUN pip3 install numpy requests matplotlib
-RUN pip3 install jupyterlab
-
 # Set up the jupyterlab client extensions
 COPY ./_private/jupyterlab-mlw/client /working/_private/jupyterlab-mlw/client
 WORKDIR /working/_private/jupyterlab-mlw/client
@@ -53,6 +47,11 @@ WORKDIR /working/_private/jupyterlab-mlw/server
 RUN pip3 install .
 RUN jupyter serverextension enable --py jupyterlab_mlw 
 
+# Pre-install some things we are likely to want.
+# Other packages specified in requirements.txt of the workspace
+# will be installed at run time 
+RUN pip3 install numpy requests matplotlib scipy pybind11 seaborn
+
 # Expose the port for jupyterlab
 EXPOSE 8888
 
@@ -62,6 +61,8 @@ WORKDIR /working/workspace
 
 COPY ./_private/bin /working/_private/bin
 ENV PATH "/working/_private/bin:$PATH"
+
+ENV KBUCKET_DOWNLOAD_DIRECTORY "/working/kbucket_downloads"
 
 CMD mlw_init
 
