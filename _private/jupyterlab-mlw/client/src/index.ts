@@ -39,6 +39,9 @@ namespace CommandIDs {
 
   export
   const saveWorkspaceAs: string = 'mlw:save-workspace-as';
+
+  export
+  const installRequirements: string = 'mlw:install-requirements';
 };
 
 function HTTP_mlw_request(URL,METHOD,REQUEST):Promise<Response>{
@@ -68,7 +71,17 @@ async function mlw_save_workspace() {
       alert('Error saving workspace: '+obj.error)
       return;
     }
-    alert('Workspace has been saved.');
+    console.log (obj);
+    var num_files_saved=(obj['files_saved']||[]).length;
+    var num_files_added=(obj['files_added']||[]).length;
+    var num_files_not_saved=(obj['files_not_saved']||[]).length;
+    var num_files_removed=(obj['files_removed']||[]).length;
+    var list0=[];
+    list0.push(`${num_files_saved} files saved`);
+    if (num_files_added) list0.push(`${num_files_added} files added`);
+    if (num_files_removed) list0.push(`${num_files_removed} files removed`);
+    if (num_files_not_saved) list0.push(`${num_files_not_saved} files not saved`);
+    alert(`Workspace has been saved: ${list0.join(', ')}`);
     console.log (obj.output);
   }
   catch(err){
@@ -94,6 +107,30 @@ async function mlw_load_workspace(url_params) {
     }
     console.log (obj.output);
     console.log ('Workspace has been loaded.')
+  }
+  catch(err){
+    throw ServerConnection.NetworkError;
+  }
+}
+
+async function mlw_install_requirements() {
+  try {
+    var val = await HTTP_mlw_request('/mlw/install_requirements','POST',{});
+    if (val.status !== 200) {
+      console.log (val);
+      console.log (val.status);
+      return val.text().then(data=>{
+        throw new ServerConnection.ResponseError(val, data);
+      });
+    }
+    var obj=await val.json();
+    console.log (obj);
+    if (!obj.success) {
+      alert('Error installing requirements: '+obj.error)
+      return;
+    }
+    console.log (obj.output);
+    console.log ('Requirements have been installed.')
   }
   catch(err){
     throw ServerConnection.NetworkError;
@@ -127,17 +164,56 @@ function activateExtension(app: JupyterLab, palette: ICommandPalette, mainMenu: 
     }
   });
 
+  commands.addCommand(CommandIDs.installRequirements, {
+    label: 'Install requirements...',
+    caption: 'Use pip to install packages listed in requirements.txt',
+    execute: () => {
+      mlw_install_requirements();
+    }
+  });
+
   // Add commands and menu itmes.
   let menu = new Menu({ commands });
   menu.title.label = category;
   [
     CommandIDs.saveWorkspace,
     CommandIDs.saveWorkspaceAs,
+    CommandIDs.installRequirements
   ].forEach(command => {
     palette.addItem({ command, category });
     menu.addItem({ command });
   });
   mainMenu.addMenu(menu, {rank: 100});
+
+  start_notify_still_alive();
+}
+
+function start_notify_still_alive() {
+  on_timer();
+  function on_timer() {
+    do_notify_still_alive();
+    setTimeout(function() {
+      on_timer();
+    },10000);
+  }
+}
+
+async function do_notify_still_alive() {
+  try {
+    var val = await HTTP_mlw_request('/mlw/notify_still_alive','POST',{});
+    if (val.status !== 200) {
+      console.error ('Problem notifying still alive',val,val.status);
+      return;
+    }
+    var obj=await val.json();
+    if (!obj.success) {
+      console.error('Error notifying still alive: '+obj.error)
+      return;
+    }
+  }
+  catch(err){
+    console.error('Error notifying still alive.',err);
+  }
 }
 
 function parse_url_params0() {

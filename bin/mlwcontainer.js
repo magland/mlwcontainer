@@ -92,11 +92,13 @@ function run_process(exe,args,callback) {
 		// The following is a terrible hack. We'll need to replace it with something better later.
 		// When user closes browser tab we often get message "Starting buffering for"
 		// So this closes the session in that circumstance
+		/*
 		var ind=txt.indexOf('Starting buffering for');
 		if (ind>=0) {
 			console.log ('Log output included "Started buffering for", so we are closing the server.');
 			P.kill('SIGINT');
 		}
+		*/
 	});
 	P.stderr.on('data',function(chunk) {
 		txt+=chunk;

@@ -230,8 +230,12 @@ function Container() {
   var m_error='';
   var m_container_name='mlwc_'+make_random_id(8);
   var m_is_attached=false;
+  var m_last_notify_still_alive=new Date();
+  var m_stopped=false;
 
   function start(opts) {
+    m_last_notify_still_alive=new Date();
+
     m_port=opts.port;
 
     console.log ('Starting container on port '+m_port);
@@ -252,19 +256,25 @@ function Container() {
     var P=m_process;
     var console_txt='';
     P.stdout.on('data',function(chunk) {
+      m_last_notify_still_alive=new date();
+
       console_txt+=chunk;
       process.stdout.write(''+chunk);
 
       // The following is a terrible hack. We'll need to replace it with something better later.
       // When user closes browser tab we often get message "Starting buffering for"
       // So this closes the session in that circumstance
+      /*
       var ind=console_txt.indexOf('Starting buffering for');
       if (ind>=0) {
         console.log ('Log output included "Started buffering for", so we are closing the server.');
         stop();
       }
+      */
     });
     P.stderr.on('data',function(chunk) {
+      m_last_notify_still_alive=new date();
+
       console_txt+=chunk;
       process.stdout.write(''+chunk);
     });
@@ -273,6 +283,7 @@ function Container() {
     });
   }
   function stop() {
+    m_stopped=true;
     console.log ('killing and removing container: '+m_container_name);
     require('child_process').spawn('docker',['rm','-f',m_container_name],{detached:true});
   }
@@ -285,6 +296,28 @@ function Container() {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+  }
+
+  start_check_still_alive();
+  function start_check_still_alive() {
+    on_timer();
+    function on_timer() {
+      if ((m_is_running)&&(!m_stopped)) {
+        do_check_still_alive();
+        setTimeout(function() {
+          on_timer();
+        },10000);
+      }
+    }
+  }
+
+  function do_check_still_alive() {
+    var elapsed=(new Date())-m_last_notify_still_alive;
+    var timeout_minutes=1;
+    if (elapsed>1*60*1000) {
+      console.log('Stopping due to inactivity from '+timeout_minutes+' minutes');
+      stop();
+    }
   }
 
 }
