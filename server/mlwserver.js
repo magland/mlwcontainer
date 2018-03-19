@@ -256,7 +256,7 @@ function Container() {
     var P=m_process;
     var console_txt='';
     P.stdout.on('data',function(chunk) {
-      m_last_notify_still_alive=new date();
+      m_last_notify_still_alive=new Date();
 
       console_txt+=chunk;
       process.stdout.write(''+chunk);
@@ -273,7 +273,7 @@ function Container() {
       */
     });
     P.stderr.on('data',function(chunk) {
-      m_last_notify_still_alive=new date();
+      m_last_notify_still_alive=new Date();
 
       console_txt+=chunk;
       process.stdout.write(''+chunk);
@@ -313,7 +313,7 @@ function Container() {
 
   function do_check_still_alive() {
     var elapsed=(new Date())-m_last_notify_still_alive;
-    var timeout_minutes=1;
+    var timeout_minutes=5;
     if (elapsed>1*60*1000) {
       console.log('Stopping due to inactivity from '+timeout_minutes+' minutes');
       stop();
