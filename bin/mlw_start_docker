@@ -39,6 +39,7 @@ if [ ! -z "$KBUCKET_DOWNLOAD_DIRECTORY" ]; then
 fi
 
 #docker run --env-file=tmp.env --name $random_container_name -p $PORT:8888 -t mlw1 &
+#docker run -v /var/run/docker.sock:/var/run/docker.sock --name $random_container_name $foldermap -p $PORT:8888 -t mlw1 &
 docker run --name $random_container_name $foldermap -p $PORT:8888 -t mlw1 &
 
 # Wait for the server to have started...

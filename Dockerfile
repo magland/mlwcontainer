@@ -25,10 +25,18 @@ RUN apt-get update && \
 # Install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh && \
 	bash nodesource_setup.sh
-
 RUN apt-get update && \
     apt-get install -y \
     nodejs
+
+# Install MountainLab
+RUN apt-get update && \
+	apt-get install -y \
+	software-properties-common
+RUN add-apt-repository -y ppa:magland/mountainlab && \
+	apt-get update && \
+	apt-get install -y \
+	mountainlab mountainlab-mpdock
 
 # Install jupyterlab 
 RUN pip3 install jupyterlab
@@ -63,6 +71,25 @@ COPY ./_private/bin /working/_private/bin
 ENV PATH "/working/_private/bin:$PATH"
 
 ENV KBUCKET_DOWNLOAD_DIRECTORY "/working/kbucket_downloads"
+ENV DEBIAN_FRONTEND "noninteractive"
+
+
+
+################## MountainSort ####################
+# Install qt5
+RUN apt-add-repository ppa:ubuntu-sdk-team/ppa && \
+	apt-get update && \
+	apt install -y qtdeclarative5-dev qt5-default qtbase5-dev qtscript5-dev make g++
+RUN apt-get update && apt install -y libfftw3-dev
+
+WORKDIR /opt/mountainlab/packages
+RUN git clone https://github.com/flatironinstitute/mountainsort
+WORKDIR /opt/mountainlab/packages/mountainsort
+RUN ./compile_components.sh
+RUN pip3 install numpydoc
+#####################################################
+
+WORKDIR /working/workspace
 
 CMD mlw_init
 
